@@ -1,15 +1,19 @@
-﻿<Page x:Name="pageRoot"
-    x:Class="Waterdrop.ItemPage"    
+﻿<Page
+    x:Class="Waterdrop.DayPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Waterdrop"
-    xmlns:data="using:Waterdrop.Data"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:Waterdrop.Converters"
     mc:Ignorable="d"
-    DataContext="{Binding DefaultViewModel.Item, RelativeSource={RelativeSource Self}}"
-    d:DataContext="{Binding Groups[0].Items[0], Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:SampleDataSource}}"
+    DataContext="{Binding DefaultViewModel.Day, RelativeSource={RelativeSource Self}}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <converters:DateTimeToString x:Key="DateToStr" />
+    </Page.Resources>
+
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -26,6 +30,7 @@
                 <EntranceThemeTransition/>
             </TransitionCollection>
         </Grid.ChildrenTransitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -33,16 +38,17 @@
 
         <!-- Title Panel -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock x:Uid="Header" Text="application name" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0" />
-            <TextBlock Text="{Binding Title}" Style="{ThemeResource HeaderTextBlockStyle}" Margin="0,-6.5,0,26.5" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <TextBlock x:Uid="Header" Text="WATERDROP" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="{Binding Date, Converter={StaticResource ResourceKey=DateToStr}, ConverterParameter=Short}"
+                       ContinuumNavigationTransitionInfo.IsEntranceElement="True"
+                       Margin="0,-6.5,0,26.5"
+                       Style="{StaticResource HeaderTextBlockStyle}"
+                       CharacterSpacing="{StaticResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
-        <!-- 
-            TODO: Content should be placed within the following grid 
-                  to show details for the current item
-        -->
+        <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-
+            <TextBlock Text="{Binding FullInfo}" Style="{ThemeResource BodyTextBlockStyle}" />
         </Grid>
     </Grid>
 </Page>

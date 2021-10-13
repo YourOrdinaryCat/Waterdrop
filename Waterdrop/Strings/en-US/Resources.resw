@@ -117,26 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDay.Label" xml:space="preserve">
+    <value>add day</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>continue</value>
+  </data>
+  <data name="Drink.Label" xml:space="preserve">
+    <value>drink</value>
+  </data>
+  <data name="ExceedWarning" xml:space="preserve">
+    <value>Drinking more will exceed your intake goal! Are you sure you want to continue?</value>
+  </data>
   <data name="Header.Text" xml:space="preserve">
-    <value>application name</value>
+    <value>WATERDROP</value>
   </data>
   <data name="Hub.Header" xml:space="preserve">
-    <value>application name</value>
+    <value>waterdrop</value>
   </data>
-  <data name="HubSection1" xml:space="preserve">
-    <value>SECTION 1</value>
+  <data name="HubSection1.Header" xml:space="preserve">
+    <value>TODAY</value>
   </data>
-  <data name="HubSection2" xml:space="preserve">
-    <value>SECTION 2</value>
+  <data name="HubSection2.Header" xml:space="preserve">
+    <value>ALL DAYS</value>
   </data>
-  <data name="HubSection3" xml:space="preserve">
-    <value>SECTION 3</value>
-  </data>
-  <data name="HubSection4" xml:space="preserve">
-    <value>SECTION 4</value>
-  </data>
-  <data name="HubSection5" xml:space="preserve">
-    <value>SECTION 5</value>
+  <data name="HubSection3.Header" xml:space="preserve">
+    <value>TIPS</value>
   </data>
   <data name="NavigationFailedExceptionMessage" xml:space="preserve">
     <value>Navigation failed.</value>

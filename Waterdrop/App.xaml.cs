@@ -1,19 +1,12 @@
-﻿using Waterdrop.Common;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using Waterdrop.Common;
+using Waterdrop.Data;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
@@ -29,6 +22,13 @@ namespace Waterdrop
         private TransitionCollection transitions;
 
         /// <summary>
+        /// Path to the app's database.
+        /// </summary>
+        public static string DB_PATH = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "Water.sqlite");
+
+        public static HydrationDataSource MainHydrationSource { get; private set; }
+
+        /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
@@ -36,6 +36,14 @@ namespace Waterdrop
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
+
+            SQLite();
+        }
+
+        private async void SQLite()
+        {
+            await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("Water.sqlite", CreationCollisionOption.OpenIfExists);
+            MainHydrationSource = new HydrationDataSource();
         }
 
         /// <summary>

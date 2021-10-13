@@ -1,26 +1,11 @@
-﻿using Waterdrop.Common;
+﻿using System;
+using Waterdrop.Common;
 using Waterdrop.Data;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
+using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
-
-// The Hub Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
 namespace Waterdrop
 {
@@ -30,7 +15,6 @@ namespace Waterdrop
     public sealed partial class HubPage : Page
     {
         private readonly NavigationHelper navigationHelper;
-        private readonly ObservableDictionary defaultViewModel = new ObservableDictionary();
         private readonly ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView("Resources");
 
         public HubPage()
@@ -57,12 +41,8 @@ namespace Waterdrop
 
         /// <summary>
         /// Gets the view model for this <see cref="Page"/>.
-        /// This can be changed to a strongly typed view model.
         /// </summary>
-        public ObservableDictionary DefaultViewModel
-        {
-            get { return this.defaultViewModel; }
-        }
+        public HydrationDataSource SourceViewModel => App.MainHydrationSource;
 
         /// <summary>
         /// Populates the page with content passed during navigation.  Any saved state is also
@@ -75,11 +55,11 @@ namespace Waterdrop
         /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var sampleDataGroups = await SampleDataSource.GetGroupsAsync();
-            this.DefaultViewModel["Groups"] = sampleDataGroups;
+            // TODO: Add hydration related tips here.
+            // var sampleDataGroups = await SampleDataSource.GetGroupsAsync();
+            // this.DefaultViewModel["Groups"] = sampleDataGroups;
         }
 
         /// <summary>
@@ -96,26 +76,14 @@ namespace Waterdrop
         }
 
         /// <summary>
-        /// Shows the details of a clicked group in the <see cref="SectionPage"/>.
-        /// </summary>
-        private void GroupSection_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var groupId = ((SampleDataGroup)e.ClickedItem).UniqueId;
-            if (!Frame.Navigate(typeof(SectionPage), groupId))
-            {
-                throw new Exception(this.resourceLoader.GetString("NavigationFailedExceptionMessage"));
-            }
-        }
-
-        /// <summary>
         /// Shows the details of an item clicked on in the <see cref="ItemPage"/>
         /// </summary>
         private void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            if (!Frame.Navigate(typeof(ItemPage), itemId))
+            var itemId = ((Days)e.ClickedItem).Id;
+            if (!Frame.Navigate(typeof(DayPage), itemId))
             {
                 throw new Exception(this.resourceLoader.GetString("NavigationFailedExceptionMessage"));
             }
@@ -146,5 +114,42 @@ namespace Waterdrop
         }
 
         #endregion
+
+        private async void Drink_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            if (SourceViewModel.AllDays[0].Progress == 100)
+            {
+                var messageDialog = new MessageDialog(resourceLoader.GetString("ExceedWarning"));
+
+                // Add commands.
+                messageDialog.Commands.Add(new UICommand(resourceLoader.GetString("Cancel"),
+                    DrinkCommandInvokedHandler, 0));
+                messageDialog.Commands.Add(new UICommand(resourceLoader.GetString("Continue"),
+                    DrinkCommandInvokedHandler, 1));
+
+                // Set the command indexes.
+                messageDialog.DefaultCommandIndex = 0;
+                messageDialog.CancelCommandIndex = 1;
+
+                // Show the dialog.
+                await messageDialog.ShowAsync();
+                return;
+            }
+
+            SourceViewModel.DrinkWater(200);
+        }
+
+        private void DrinkCommandInvokedHandler(IUICommand command)
+        {
+            if ((int)command.Id == 1)
+            {
+                SourceViewModel.DrinkWater(200);
+            }
+        }
+
+        private void AddDay_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            SourceViewModel.UpsertDay(new Days(DateTime.Now, 2000));
+        }
     }
 }
